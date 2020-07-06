@@ -28,7 +28,7 @@ $apprenants = $pdo->query('SELECT * FROM apprenant ')->fetchAll();
 
                 <p>
                     <label for="groupe" class="control-label">Selection sans Chosen</label>
-                    <select name="groupe[]" class="form-control">
+                    <select name="groupe[]"  class="form-control">
 
                         <?php foreach ($apprenants as $apprenant) : ?>
                             <option value="<?= $apprenant['id'] ?>"><?= $apprenant['prenom'] ?> <?= $apprenant['nom'] ?></option>
