@@ -36,12 +36,55 @@
                     <label for="listeAjax" class="control-label">Auto completion avec AJAX</label>
                     <input type="text" class="form-control" id="listeAjax">
                 </div>
+                <div class="form-group">
+                    <label for="listeAjax" class="control-label">Auto completion avec AJAX en Javascript et XMLHttpRequest</label>
+                    <input type="text" class="form-control" id="listeXMLHttpRequest" list="listeApprenant">
+                    <datalist id="listeApprenant">
+                    </datalist>
+                </div>
             </div>
         </div>
     </div>
 
 
     <script>
+        listeXMLHttpRequest = document.getElementById('listeXMLHttpRequest');
+
+        //Faire des autocompletions avec des requêtes asynchrones 
+        listeXMLHttpRequest.addEventListener('keyup', function(e) {
+
+            //Object XMLHTTPRequest
+            xmlHttp = new XMLHttpRequest();
+
+            url = "http://localhost/presentation6-7-2020/jquery/service.php";
+
+            //Ouverture 
+            xmlHttp.open("POST", url, true);
+            //l'entête 
+            xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")
+            //reponse
+            xmlHttp.responseType = "json";
+            //envoie
+            xmlHttp.send('search=search&q=' + listeXMLHttpRequest.value);
+            //changement d'etat
+            xmlHttp.onreadystatechange = function(e) {
+                if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+                    l = xmlHttp.response.length;
+                    let html = "";
+
+                    for (let i = 0; i < l; i++) {
+                        html += "<option value='" + xmlHttp.response[i] + "'>";
+
+                    }
+                    //ajouter la reponse dans le DataList
+                    document.getElementById('listeApprenant').innerHTML = html;
+                }
+            }
+
+
+        });
+
+        //Utilisation du Jquery
         $(document).ready(function() {
 
 
@@ -54,25 +97,40 @@
                 'Cheikh Mbow',
                 'Astou Cisse'
             ];
-
+            //autocompletion avec le tableau
             $('#listeJs').autocomplete({
                 source: tab
             })
 
+            //autocompletion avec de l'ajax
             listeAjax = $('#listeAjax');
             listeAjax.keyup(function(e) {
-                $.post("http://localhost/presentation6-7-2020/jquery/service.php", {
+                //fonction ajax de jquery
+                $.ajax({
+                    //url
+                    url: "http://localhost/presentation6-7-2020/jquery/service.php",
+                    //type POST OU GET OU ........
+                    type: 'Post',
+                    //Donne a envoye
+                    data: {
                         q: listeAjax.val(),
                         search: 'search'
                     },
-                    function(data, textStatus, jqXHR) {
+                    //ce qu'on doit faire en cas de succes
+                    success: function(data) {
                         listeAjax.autocomplete({
                             source: data
                         })
                     },
-                    "json"
-                );
+                    //ce qu'on doit faire en cas d'erreur
+                    error: function(e) {
+                        console.log('Erreur ajax')
+                    },
+                    //type de donnees a recevoir
+                    dataType: 'json'
+                });
             });
+
 
 
         });

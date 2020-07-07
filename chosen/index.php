@@ -70,11 +70,11 @@ $apprenants = $pdo->query('SELECT * FROM apprenant ')->fetchAll();
 
     <script>
         $(document).ready(function() {
-
+            //faire du chosen
             $('#name').chosen({ })
-
+            //faire du chosen
             $('#groupe').chosen({
-                max_selected_options: 4
+                max_selected_options: 4 //nombre de selection maximum : 4
             })
             $("#groupe").bind("chosen:maxselected", function () { 
                 alert('Maximum 4 membres')
